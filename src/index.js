@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // End view elements
   const resultContainer = document.querySelector("#result");
-
+  const restartButonElement = document.getElementById("restartButton");
   /************  SET VISIBILITY OF VIEWS  ************/
 
   // Show the quiz view (div#quizView) and hide the end view (div#endView)
@@ -57,25 +57,57 @@ document.addEventListener("DOMContentLoaded", () => {
   /************  SHOW INITIAL CONTENT  ************/
 
   // Convert the time remaining in seconds to minutes and seconds, and pad the numbers with zeros if needed
-  const minutes = Math.floor(quiz.timeRemaining / 60)
-    .toString()
-    .padStart(2, "0");
-  const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+  function displayTimeMS() {
+    const minutes = Math.floor(quiz.timeRemaining / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
 
-  // Display the time remaining in the time remaining container
-  const timeRemainingContainer = document.getElementById("timeRemaining");
-  timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+    // Display the time remaining in the time remaining container
+    const timeRemainingContainer = document.getElementById("timeRemaining");
+    timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+  }
+
+  displayTimeMS();
 
   // Show first question
   showQuestion();
 
   /************  TIMER  ************/
 
-  let timer;
+  let timer = null;
+  function quizTimer() {
+    timer = setInterval(() => {
+      quiz.timeRemaining--;
 
+      if (quiz.timeRemaining <= 0) {
+        setTimeout(() => {
+          showResults();
+        });
+        clearInterval(timer);
+      }
+      displayTimeMS(quiz.timeRemaining);
+    }, 1000);
+  }
+  quizTimer();
   /************  EVENT LISTENERS  ************/
 
   nextButton.addEventListener("click", nextButtonHandler);
+  restartButonElement.addEventListener("click", () => {
+    quiz.currentQuestionIndex = 0;
+    quiz.correctAnswers = 0;
+    quiz.timeRemaining = quizDuration;
+
+    quiz.shuffleQuestions();
+
+    endView.style.display = "none";
+    quizView.style.display = "block";
+    progressBar.style.width = "0%";
+
+    displayTimeMS();
+    showQuestion();
+    quizTimer();
+  });
 
   /************  FUNCTIONS  ************/
 
@@ -143,9 +175,10 @@ document.addEventListener("DOMContentLoaded", () => {
       input.name = "choice";
       input.value = inputChoices;
       const label = document.createElement("label");
-      label.innerText = inputChoices;
+      label.innerText = inputChoices + "  ";
       choiceContainer.appendChild(input);
       choiceContainer.appendChild(label);
+      choiceContainer.appendChild(document.createElement("br"));
     }
   }
 
