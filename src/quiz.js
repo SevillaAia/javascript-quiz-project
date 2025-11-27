@@ -15,7 +15,7 @@ class Quiz {
   }
   // 3. moveToNextQuestion()
   moveToNextQuestion() {
-    if (this.currentQuestionIndex < this.questions.length - 1) {
+    if (this.currentQuestionIndex < this.questions.length) {
       this.currentQuestionIndex++;
     }
   }
@@ -39,7 +39,7 @@ class Quiz {
 
   // 6. hasEnded()
   hasEnded() {
-    return this.currentQuestionIndex >= this.questions.length - 1;
+    return this.currentQuestionIndex >= this.questions.length;
   }
 
   filterQuestionsByDifficulty(difficulty) {

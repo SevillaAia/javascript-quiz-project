@@ -85,6 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showQuestion() {
     // If the quiz has ended, show the results
+    console.log(quiz.hasEnded());
+    console.log(quiz.currentQuestionIndex);
+
     if (quiz.hasEnded()) {
       showResults();
       return;
@@ -179,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //
     // 1. Hide the quiz view (div#quizView)
     quizView.style.display = "none";
+    console.log("here");
 
     // 2. Show the end view (div#endView)
     endView.style.display = "flex";
